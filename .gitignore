@@ -66,3 +66,24 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Added after standard C++ .gitignore template
+# CMake build output
+build/
+out/
+cmake-build-*/
+CMakeUserPresets.json
+
+#clangd
+.cache/
+compile_commands.json
+
+#VS Code (keep shared recomendations)
+*.vscode/*
+!.vscode/extensions.json
+
+#macOS
+.DS_Store
+
+#vcpkg
+vcpkg_installed/
