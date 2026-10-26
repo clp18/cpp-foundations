@@ -87,3 +87,6 @@ compile_commands.json
 
 #vcpkg
 vcpkg_installed/
+
+#notes files
+notes.txt

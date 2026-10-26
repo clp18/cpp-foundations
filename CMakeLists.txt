@@ -25,8 +25,8 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 add_executable(cpp_foundations_tests tests/test_math.cpp)
 target_link_libraries(cpp_foundations_tests PRIVATE cpp_foundations GTest::gtest_main)
-#target_compile_options(cpp_foundations_tests PRIVATE -Wall -Wextra -Wpedantic -unsafe-buffer-usage -Wformat=2 -Wconversion -Wimplicit-fallthrough -Werror)
-target_compile_options(cpp_foundations_tests PRIVATE -Wall -Wextra -Wpedantic -Wunsafe-buffer-usage -Wformat=2 -Wconversion -Wimplicit-fallthrough -Werror)
+# -Wunsafe-buffer-usage is a Clang only flag
+target_compile_options(cpp_foundations_tests PRIVATE -Wall -Wextra -Wpedantic -Wformat=2 -Wconversion -Wimplicit-fallthrough -Werror $<$<CXX_COMPILER_ID:Clang,AppleClang>:-Wunsafe-buffer-usage>)
 
 include(GoogleTest)
 gtest_discover_tests(cpp_foundations_tests)
