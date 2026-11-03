@@ -46,6 +46,9 @@ git ls-files -co --exclude-standard '*.cpp' '*.hpp' | xargs clang-format -i
 # Lint (needs a configured build/debug)
 run-clang-tidy -p build/debug -quiet "$PWD/(tests|src|include)/"
 ```
+## Documentation
+- [ADR-001: Message Codec Design](docs/ADR/ADR-001.md)
+- [Pitch Tracker Specification](docs/Specs/Pitch-Tracker.md)
 
 ## License
 MIT. See [LICENSE](LICENSE).
