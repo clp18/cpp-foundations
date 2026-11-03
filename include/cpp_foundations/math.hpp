@@ -1,5 +1,5 @@
 #pragma once
 
 namespace cf {
-    constexpr int add(int a, int b){return a+b;}
-}
+constexpr int Add(int a, int b) { return a + b; }
+}  // namespace cf
