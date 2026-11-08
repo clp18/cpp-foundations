@@ -9,7 +9,7 @@ ASan/UBSan, and clang-tidy, following the Google C++ Style Guide.
 
 ## Features
 - Header-only library (`include/cpp_foundations/`)
-- CMake presets: `debug`, `release`, `asan` (ASan + UBSan)
+- CMake presets: `debug`, `release`, `asan` (ASan + UBSan), `coverage`
 - GoogleTest via CMake `FetchContent`
 - CI on Linux (GCC) and macOS (Apple Clang)
 - Google style enforced with `.clang-format` and `.clang-tidy`

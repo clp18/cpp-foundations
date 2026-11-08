@@ -23,10 +23,14 @@ FetchContent_MakeAvailable(googletest)
 
 #Tests
 enable_testing()
-add_executable(cpp_foundations_tests tests/test_math.cpp)
+add_executable(cpp_foundations_tests tests/test_codec_error.cpp tests/test_death.cpp tests/test_math.cpp tests/test_result.cpp)
 target_link_libraries(cpp_foundations_tests PRIVATE cpp_foundations GTest::gtest_main)
 # -Wunsafe-buffer-usage is a Clang only flag
 target_compile_options(cpp_foundations_tests PRIVATE -Wall -Wextra -Wpedantic -Wformat=2 -Wconversion -Wimplicit-fallthrough -Werror $<$<CXX_COMPILER_ID:Clang,AppleClang>:-Wunsafe-buffer-usage>)
+
+# EXPECT_DEATH expands to an fprintf call inside the test file
+set_source_files_properties(tests/test_death.cpp PROPERTIES
+  COMPILE_OPTIONS "$<$<CXX_COMPILER_ID:Clang,AppleClang>:-Wno-unsafe-buffer-usage-in-libc-call>")
 
 include(GoogleTest)
 gtest_discover_tests(cpp_foundations_tests)
