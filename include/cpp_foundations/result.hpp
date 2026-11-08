@@ -114,4 +114,68 @@ class [[nodiscard]] Result {
   std::variant<T, E> data_;
 };
 
+// Specialized for operations that succeed with no value. `return {};` is
+// success. Designed to resemble std::expected<void, E> to allow for ease of
+// porting to C++23 in the future
+template <typename E>
+class [[nodiscard]] Result<void, E> {
+ public:
+  // Constructors
+  constexpr Result() = default;
+
+  // NOLINTNEXTLINE(google-explicit-constructor,cppcoreguidelines-explicit-constructor)
+  constexpr Result(Unexpected<E> unexpected)
+      : data_(std::in_place_index<1>, std::move(unexpected).error()) {}
+
+  // NOLINTBEGIN(readability-identifier-naming): matches std::expected
+  // Validation checks
+  [[nodiscard]] constexpr bool has_value() const noexcept {
+    return data_.index() == 0;
+  }
+
+  constexpr explicit operator bool() const noexcept { return has_value(); }
+
+  // Accessors
+  // Calling value() when holding an error is a bug in the calling code
+  constexpr void value() const {
+    if (!has_value()) {
+      std::abort();
+    }
+  }
+
+  // Calling error() when holding a value is a bug in the calling code
+  // Not a runtime error, so abort program
+  [[nodiscard]] constexpr E& error() & {
+    if (has_value()) {
+      std::abort();
+    }
+    return std::get<1>(data_);
+  }
+
+  [[nodiscard]] constexpr const E& error() const& {
+    if (has_value()) {
+      std::abort();
+    }
+    return std::get<1>(data_);
+  }
+
+  [[nodiscard]] constexpr E&& error() && {
+    if (has_value()) {
+      std::abort();
+    }
+    return std::get<1>(std::move(data_));
+  }
+
+  [[nodiscard]] constexpr const E&& error() const&& {
+    if (has_value()) {
+      std::abort();
+    }
+    return std::get<1>(std::move(data_));
+  }
+  // NOLINTEND(readability-identifier-naming)
+
+ private:
+  std::variant<std::monostate, E> data_;  // monostate = success
+};
+
 }  // namespace cf

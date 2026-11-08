@@ -4,9 +4,12 @@
 #include <string>
 #include <type_traits>
 
+#include "cpp_foundations/codec_error.hpp"
 #include "cpp_foundations/result.hpp"
 
-// TODO(clp18): Result tests are incomplete. Still to cover:
+// ---------- Test Cases for cf::Result<T, E> ----------
+
+// TODO(clp18): ResultTest is incomplete. Still to cover:
 //   - value() and error() overloads: &, const&, &&, const&&
 //   - Unexpected::error() const& and &&
 //   - operator bool, copy and move, Result<int, int>,
@@ -53,3 +56,43 @@ TEST(ResultTest, ConstructorWithRvalue) {
 // ----- Operator Test: error() -----
 
 // ----- Operator Test: Unexpected -----
+
+// ---------- End of Test Cases for cf::Result<T, E> ----------
+
+// ---------- Test Cases for cf::Result<void, E> ----------
+
+// TODO(clp18): VoidResultTest is incomplete. Still to cover:
+//   - error() overloads: const&, &&, const&&
+//   - operator bool on an error, copy and move, value() on a const result
+
+// Helper Functions for testing
+namespace {
+using VoidResult = cf::Result<void, cf::CodecError>;
+VoidResult ReturnSuccess() { return {}; }
+VoidResult ReturnError() {
+  return cf::Unexpected(cf::CodecError::kInvalidWidth);
+}
+}  // namespace
+
+// Compile-time Checks
+static_assert(std::is_default_constructible_v<VoidResult>);
+constexpr VoidResult kVoid{};
+static_assert(kVoid.has_value());
+static_assert(!std::is_constructible_v<VoidResult, cf::CodecError>,
+              "A bare E must go through cf::Unexpected");
+static_assert(!std::is_constructible_v<VoidResult, int>,
+              "There is no value to construct from");
+
+TEST(VoidResultTest, ReturnBracesIsSuccess) {
+  VoidResult res = ReturnSuccess();
+  EXPECT_TRUE(res.has_value());
+  EXPECT_TRUE(static_cast<bool>(res));
+  res.value();  // must not abort
+}
+
+TEST(VoidResultTest, ReturnUnexpectedIsError) {
+  VoidResult res = ReturnError();
+  ASSERT_FALSE(res.has_value());
+  EXPECT_EQ(res.error(), cf::CodecError::kInvalidWidth);
+}
+// ---------- End of Test Cases for cf::Result<void, E> ----------
